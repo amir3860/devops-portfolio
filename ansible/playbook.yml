@@ -1,0 +1,21 @@
+- hosts: local
+  become: true
+  tasks:
+    - name: Install base packages
+      ansible.builtin.apt:
+        name: [curl, git, ca-certificates]
+        state: present
+        update_cache: true
+
+    - name: Make sure Docker is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ lookup('env', 'USER') }}"
+        groups: docker
+        append: true
+
